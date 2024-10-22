@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# Custom
+Solver/solver
+Solver/.vscode
