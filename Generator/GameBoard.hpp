@@ -16,6 +16,7 @@ public:
     int getNumberAt(int x, int y);
     void setNumberAt(int x, int y, int n);
     bool isPossibleAt(int x, int y, int n);
+    
     void fillAllPossibilities();
     void redoPossibilitiesAt(int x, int y);
     void solveObvious();
