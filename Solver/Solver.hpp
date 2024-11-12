@@ -15,6 +15,7 @@ private:
     void findAllPossibilities();
     bool fillAndFix(int x, int y, int z);
     void findSolvedCells();
+    bool findOnePossibilityInArea();
 public:
     Solver(GameBoard* solutionBoard);
     Solver(GameBoard* solutionBoard, bool checkForMultpileSolutions);

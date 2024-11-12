@@ -124,6 +124,105 @@ void Solver::findSolvedCells()
                 this->fillAndFix(i, j, possibilitiesBoard->getOnlyPossibilityAt(i, j));
 }
 
+bool Solver::findOnePossibilityInArea()
+{
+    bool somethingChanged = false;
+    int counter[GameBoard::N];
+    int lastPosition[GameBoard::N][2];
+    
+    // Rows
+    for (int i = 0; i < GameBoard::N; i++)
+    {
+        // Reset counter
+        for (int k = 0; k < GameBoard::N; k++)
+            counter[k] = 0;
+        // Check each cell
+        for (int j = 0; j < GameBoard::N; j++)
+            // Check for each number
+            for (int k = 1; k <= GameBoard::N; k++)
+                if (possibilitiesBoard->isPossible(i, j, k))
+                {
+                    counter[k - 1]++;
+                    lastPosition[k - 1][0] = i;
+                    lastPosition[k - 1][1] = j;
+                }
+        // Check which number appears only once in this row
+        for (int k = 0; k < GameBoard::N; k++)
+            if (counter[k] == 1)
+            {
+                // solutionBoard->printGrid();
+                // possibilitiesBoard->printPossibilities();
+                if (!this->fillAndFix(lastPosition[k][0], lastPosition[k][1], k + 1))
+                    throw 11;
+                somethingChanged = true;
+            }
+    }
+    // Columns
+    for (int i = 0; i < GameBoard::N; i++)
+    {
+        // Reset counter
+        for (int k = 0; k < GameBoard::N; k++)
+            counter[k] = 0;
+        // Check each cell
+        for (int j = 0; j < GameBoard::N; j++)
+            // Check for each number
+            for (int k = 1; k <= GameBoard::N; k++)
+                if (possibilitiesBoard->isPossible(j, i, k))
+                {
+                    counter[k - 1]++;
+                    lastPosition[k - 1][0] = j;
+                    lastPosition[k - 1][1] = i;
+                }
+        // Check which number appears only once in this row
+        for (int k = 0; k < GameBoard::N; k++)
+            if (counter[k] == 1)
+            {
+                if (!this->fillAndFix(lastPosition[k][0], lastPosition[k][1], k + 1))
+                    throw 11;
+                somethingChanged = true;
+            }
+    }
+    // Squares
+    for (int i = 0; i < GameBoard::N; i++)
+    {
+        int squareI = (i / GameBoard::SIZE) * GameBoard::SIZE;
+        int squareJ = (i % GameBoard::SIZE) * GameBoard::SIZE;
+        int offsetI = 0;
+        int offsetJ = 0;
+        // Reset counter
+        for (int k = 0; k < GameBoard::N; k++)
+            counter[k] = 0;
+        // Check each cell
+        for (int j = 0; j < GameBoard::N; j++)
+        {
+            int currI = squareI + offsetI;
+            int currJ = squareJ + offsetJ;
+            // Check for each number
+            for (int k = 1; k <= GameBoard::N; k++)
+                if (possibilitiesBoard->isPossible(currJ, currI, k))
+                {
+                    counter[k - 1]++;
+                    lastPosition[k - 1][0] = currJ;
+                    lastPosition[k - 1][1] = currI;
+                }
+            offsetJ = (offsetJ + 1) % GameBoard::SIZE;
+            if (offsetJ == 0)
+                offsetI++;
+            
+        }
+        // Check which number appears only once in this row
+        for (int k = 0; k < GameBoard::N; k++)
+            if (counter[k] == 1)
+            {
+                if (!this->fillAndFix(lastPosition[k][0], lastPosition[k][1], k + 1))
+                    throw 11;
+                somethingChanged = true;
+            }
+    }
+
+    return somethingChanged;
+}
+
 Solver::Solver(GameBoard *solutionBoard)
 {
     this->solutionBoard = new GameBoard(solutionBoard);
@@ -171,6 +270,25 @@ int Solver::solve()
 {
     while (unknowns > 0)
     {
+        // Use clever algorythms to eliminate possibilities
+        bool somethingChanged = true;
+        while (somethingChanged)
+        {
+            somethingChanged = false;
+            try
+            {
+                somethingChanged = somethingChanged || this->findOnePossibilityInArea();
+            }
+            catch(const int e)
+            {
+                // printf("Error\n");
+                return 0;
+            }
+        }
+        // printf("Requires guessing\n");
+        // solutionBoard->printGrid();
+        // possibilitiesBoard->printPossibilities();
+
         // Find the field with the least possibilities
         int bestI = -1, bestJ = -1, leastPossibilities = GameBoard::N + 1;
         for (int i = 0; i < GameBoard::N; i++)
