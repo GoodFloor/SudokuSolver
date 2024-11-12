@@ -6,7 +6,7 @@ all: ${executables}
 solver: ${objectFiles}
 	g++ -o solver ${objectFiles}
 
-%.o: %.cpp %.hpp
+%.o: %.cpp
 	g++ -c $^
 
 # Czyszczenie

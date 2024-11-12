@@ -91,7 +91,6 @@ void PossibilitiesBoard::printPossibilities()
         std::cout << std::endl;
     }
     std::cout << std::endl;
-    
 }
 
 void PossibilitiesBoard::clearPossibilitiesAt(int x, int y)
@@ -100,7 +99,6 @@ void PossibilitiesBoard::clearPossibilitiesAt(int x, int y)
     {
         grid[x][y][k] = false;
     }
-    
 }
 
 int PossibilitiesBoard::getNumberOfPossibilitiesAt(int x, int y)
