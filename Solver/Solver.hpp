@@ -4,8 +4,6 @@
 #include "GameBoard.hpp"
 #include "PossibilitiesBoard.hpp"
 
-int depth;
-
 class Solver
 {
 private:

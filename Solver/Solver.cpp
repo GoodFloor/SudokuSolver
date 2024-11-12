@@ -132,7 +132,7 @@ Solver::Solver(GameBoard *solutionBoard)
     this->checkForMultipleSolutions = false;
 }
 
-Solver::Solver(GameBoard *solutionBoard, bool checkForMultpileSolutions) : Solver(solutionBoard)
+Solver::Solver(GameBoard *solutionBoard, bool checkForMultipleSolutions) : Solver(solutionBoard)
 {
     this->checkForMultipleSolutions = checkForMultipleSolutions;
 }
@@ -165,12 +165,10 @@ void Solver::preprocess()
             else
                 possibilitiesBoard->clearPossibilitiesAt(i, j);
     this->findSolvedCells();
-    depth = 0;
 }
 
 int Solver::solve()
 {
-    printf("%i\n", depth);
     while (unknowns > 0)
     {
         // Find the field with the least possibilities
@@ -219,10 +217,8 @@ int Solver::solve()
                 continue;
             }
             // Try solving this new grid
-            depth++;
             int result = s->solve();
-            depth--;
-            // If there is only one solution and no previous attempts gave a solution
+            // If there is only one solution and no previous attempts gave a solution            
             if (result == 1 && candidate == nullptr)
             {
                 candidate = s->solutionBoard;

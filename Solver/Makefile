@@ -14,4 +14,4 @@ exe: ${executables}
 	rm -f *.o *.~
 
 clean:
-	rm -f *.o *.~ ${executables}
+	rm -f *.o *.~ *.gch ${executables}
