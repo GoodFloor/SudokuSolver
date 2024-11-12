@@ -62,26 +62,29 @@ int PossibilitiesBoard::getOnlyPossibilityAt(int x, int y)
 
 void PossibilitiesBoard::printPossibilities()
 {
-    for (int i = 0; i <= N * 4; i++)
+    int cellSize = SIZE + 1;
+    for (int i = 0; i <= N * cellSize; i++)
     {
-        for (int j = 0; j <= N * 4; j++)
+        for (int j = 0; j <= N * cellSize; j++)
         {
-            int n = ((i % 4) - 1) * 3 + (j % 4);
+            int n = ((i % cellSize) - 1) * SIZE + (j % cellSize);
             // Pogrubione linie
-            if (i % (SIZE * 4) == 0 || j % (SIZE * 4) == 0)
+            if (i % (SIZE * cellSize) == 0 || j % (SIZE * cellSize) == 0)
                 std::cout << "█";
             // Skrzyżowania
-            else if (i % 4 == 0 && j % 4 == 0)
+            else if (i % cellSize == 0 && j % cellSize == 0)
                 std::cout << "┼";
             // Pionowe linie
-            else if (j % 4 == 0)    
+            else if (j % cellSize == 0)    
                 std::cout << "│";
             // Poziome linie
-            else if (i % 4 == 0)    
+            else if (i % cellSize == 0)    
                 std::cout << "─";
-            // Rozwiązane pola
-            else if (n > 0 && n <= N && this->isPossible(i / 4, j / 4, n))
+            // Możliwości
+            else if (n > 0 && n <= N && this->isPossible(i / cellSize, j / cellSize, n) && n < 10)
                 std::cout << n;
+            else if (n > 0 && n <= N && this->isPossible(i / cellSize, j / cellSize, n))
+                std::cout << (char)(n - 10 + 'A');
             else
                 std::cout << " ";
         }
