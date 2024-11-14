@@ -25,7 +25,7 @@ PossibilitiesBoard::~PossibilitiesBoard()
 bool PossibilitiesBoard::isPossible(int x, int y, int z)
 {
     if (x < 0 || y < 0 || z <= 0 || x >= N || y >= N || z > N)
-        throw std::out_of_range("Out of possibilities range");
+        throw std::out_of_range("Out of possibilities range for(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")");
     return grid[x][y][z - 1];
 }
 

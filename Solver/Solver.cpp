@@ -254,6 +254,13 @@ GameBoard *Solver::getBoard()
     return solutionBoard;
 }
 
+GameBoard *Solver::exportBoard()
+{
+    GameBoard* myBoard = this->solutionBoard;
+    this->solutionBoard = nullptr;
+    return myBoard;
+}
+
 void Solver::preprocess()
 {
     this->findAllPossibilities();
@@ -285,6 +292,9 @@ int Solver::solve()
                 return 0;
             }
         }
+        if (unknowns == 0)
+            return 1;
+        
         // printf("Requires guessing\n");
         // solutionBoard->printGrid();
         // possibilitiesBoard->printPossibilities();
@@ -317,7 +327,7 @@ int Solver::solve()
             }
         std::random_device rd;
         std::mt19937 mt(rd());
-        std::shuffle(&fieldPossibilities[0], &fieldPossibilities[leastPossibilities], mt);    
+        std::shuffle(&fieldPossibilities[0], &fieldPossibilities[leastPossibilities], mt);
         
         // Try out possibilities
         GameBoard* candidate = nullptr;

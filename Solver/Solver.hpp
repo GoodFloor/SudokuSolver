@@ -22,6 +22,8 @@ public:
     Solver(GameBoard* solutionBoard, PossibilitiesBoard* possibilitiesBoard, bool checkForMultpileSolutions);
     ~Solver();
     GameBoard* getBoard();
+    // Returns board and removes link to it
+    GameBoard* exportBoard();
     void preprocess();
     int solve();
 
