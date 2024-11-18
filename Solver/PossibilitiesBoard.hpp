@@ -6,10 +6,7 @@
 class PossibilitiesBoard
 {
 private:
-    static const int SIZE = GameBoard::SIZE;
-    static const int N = GameBoard::N;
-
-    bool grid[N][N][N];
+    bool grid[GameBoard::N][GameBoard::N][GameBoard::N];
 public:
     PossibilitiesBoard();
     PossibilitiesBoard(PossibilitiesBoard* p);

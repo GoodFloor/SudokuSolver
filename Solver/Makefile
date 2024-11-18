@@ -1,5 +1,5 @@
 executables = solver generator
-commonObjectFiles = GameBoard.o PossibilitiesBoard.o Solver.o
+commonObjectFiles = GameBoard.o PossibilitiesBoard.o Solver.o GameBoard.hpp
 solverObjectFiles = ${commonObjectFiles} mainS.o
 generatorObjectFiles = ${commonObjectFiles} Generator.o mainG.o
 
@@ -11,7 +11,7 @@ solver: ${solverObjectFiles}
 generator: ${generatorObjectFiles}
 	g++ -o generator ${generatorObjectFiles}
 
-%.o: %.cpp GameBoard.hpp
+%.o: %.cpp
 	g++ -c $^
 
 # Czyszczenie
