@@ -9,6 +9,8 @@ public:
 private:
     int grid[N][N];
 public:
+    // static void setSize(int size);
+
     GameBoard();
     ~GameBoard();
     GameBoard(GameBoard* board);

@@ -10,8 +10,9 @@ public:
     Generator();
     ~Generator();
     GameBoard* generateSolvedSudoku();
-    GameBoard* generateSudoku(GameBoard* solvedBoard);
     GameBoard* generateSudoku();
+    GameBoard* generateSudoku(GameBoard* solvedBoard);
+    GameBoard* generateSudoku(GameBoard* solvedBoard, int targetDifficultyRating);
 };
 
 

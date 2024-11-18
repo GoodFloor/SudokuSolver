@@ -14,8 +14,8 @@ private:
     void findPossibilitiesAt(int x, int y);
     void findAllPossibilities();
     bool fillAndFix(int x, int y, int z);
-    void findSolvedCells();
-    bool findOnePossibilityInArea();
+    void findSolvedCells(); // Also known as Naked Singles
+    bool findHiddenSingles();
 public:
     Solver(GameBoard* solutionBoard);
     Solver(GameBoard* solutionBoard, bool checkForMultpileSolutions);
@@ -25,6 +25,7 @@ public:
     // Returns board and removes link to it
     GameBoard* exportBoard();
     void preprocess();
+    // @return -1 if no solutions, -2 if multiple solution, board difficulty rating otherwise
     int solve();
 
 

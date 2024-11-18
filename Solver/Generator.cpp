@@ -32,7 +32,17 @@ GameBoard *Generator::generateSolvedSudoku()
     return newGrid;
 }
 
+GameBoard *Generator::generateSudoku()
+{
+    return generateSudoku(this->generateSolvedSudoku());
+}
+
 GameBoard *Generator::generateSudoku(GameBoard *solvedBoard)
+{
+    return generateSudoku(solvedBoard, INT32_MAX);
+}
+
+GameBoard *Generator::generateSudoku(GameBoard *solvedBoard, int targetDifficultyRating)
 {
     Possibility fieldsList[GameBoard::N * GameBoard::N];
     for (int i = 0; i < GameBoard::N; i++)
@@ -48,24 +58,22 @@ GameBoard *Generator::generateSudoku(GameBoard *solvedBoard)
     std::mt19937 mt(rd());
     std::shuffle(&fieldsList[0], &fieldsList[GameBoard::N * GameBoard::N], mt);
     Solver* solver;
-    for (int i = 0; i < GameBoard::N * GameBoard::N; i++)
+    int currentDifficultyRating = 0;
+    for (int i = 0; i < GameBoard::N * GameBoard::N && currentDifficultyRating < targetDifficultyRating; i++)
     {
         solver = new Solver(solvedBoard, true);
         solver->getBoard()->setNumberAt(fieldsList[i].i, fieldsList[i].j, 0);
         solver->preprocess();
         int result = solver->solve();
         
-        if (result == 1)
+        if (result >= 0)
         {
+            currentDifficultyRating = result;
             solvedBoard->setNumberAt(0, 0, 0);
             solvedBoard->setNumberAt(fieldsList[i].i, fieldsList[i].j, 0);
         }
         delete solver;
     }
-    return solvedBoard;    
+    return solvedBoard;
 }
 
-GameBoard *Generator::generateSudoku()
-{
-    return generateSudoku(this->generateSolvedSudoku());
-}

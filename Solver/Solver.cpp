@@ -124,7 +124,7 @@ void Solver::findSolvedCells()
                 this->fillAndFix(i, j, possibilitiesBoard->getOnlyPossibilityAt(i, j));
 }
 
-bool Solver::findOnePossibilityInArea()
+bool Solver::findHiddenSingles()
 {
     bool somethingChanged = false;
     int counter[GameBoard::N];
@@ -275,6 +275,7 @@ void Solver::preprocess()
 
 int Solver::solve()
 {
+    int difficultyRating = 0;
     while (unknowns > 0)
     {
         // Use clever algorythms to eliminate possibilities
@@ -284,18 +285,23 @@ int Solver::solve()
             somethingChanged = false;
             try
             {
-                somethingChanged = somethingChanged || this->findOnePossibilityInArea();
+                if (this->findHiddenSingles())
+                {
+                    somethingChanged = true;
+                    difficultyRating += 1;
+                }
             }
             catch(const int e)
             {
-                // printf("Error\n");
-                return 0;
+                return -1;
             }
         }
         if (unknowns == 0)
-            return 1;
-        
+            return difficultyRating;
+
         // printf("Requires guessing\n");
+        difficultyRating += 5;
+        
         // solutionBoard->printGrid();
         // possibilitiesBoard->printPossibilities();
 
@@ -307,7 +313,7 @@ int Solver::solve()
                 {
                     int numberOfPossibilities = possibilitiesBoard->getNumberOfPossibilitiesAt(i, j);
                     if (numberOfPossibilities == 0)
-                        return 0;
+                        return -1;
                     if (numberOfPossibilities < leastPossibilities)
                     {
                         leastPossibilities = numberOfPossibilities;
@@ -347,8 +353,9 @@ int Solver::solve()
             // Try solving this new grid
             int result = s->solve();
             // If there is only one solution and no previous attempts gave a solution            
-            if (result == 1 && candidate == nullptr)
+            if (result >= 0 && candidate == nullptr)
             {
+                difficultyRating += result;
                 candidate = s->solutionBoard;
                 s->solutionBoard = nullptr;
                 candidatePossibilities = s->possibilitiesBoard;
@@ -359,7 +366,7 @@ int Solver::solve()
                     break;
             }
             // If the solver returns without a solution
-            else if (result == 0)
+            else if (result == -1)
             {
                 possibilitiesBoard->setImpossible(bestI, bestJ, fieldPossibilities[i]);
                 delete s;
@@ -368,13 +375,13 @@ int Solver::solve()
             else
             {
                 delete s;
-                return 2;
+                return -2;
             } 
         }
 
         // If no candidate was found then this grid is unsolveable
         if (candidate == nullptr)
-            return 0;
+            return -1;
 
         // Set candidate as current solution
         GameBoard* temp = this->solutionBoard;
@@ -385,7 +392,7 @@ int Solver::solve()
         delete tempP;
         unknowns = 0;
     }
-    return 1;
+    return difficultyRating;
 }
 
 void Solver::printPossibilities()
