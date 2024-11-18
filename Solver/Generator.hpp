@@ -12,6 +12,7 @@ public:
     GameBoard* generateSolvedSudoku();
     GameBoard* generateSudoku();
     GameBoard* generateSudoku(GameBoard* solvedBoard);
+    GameBoard* generateSudoku(int targetDifficultyRating);
     GameBoard* generateSudoku(GameBoard* solvedBoard, int targetDifficultyRating);
 };
 

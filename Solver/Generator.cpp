@@ -42,6 +42,11 @@ GameBoard *Generator::generateSudoku(GameBoard *solvedBoard)
     return generateSudoku(solvedBoard, INT32_MAX);
 }
 
+GameBoard *Generator::generateSudoku(int targetDifficultyRating)
+{
+    return generateSudoku(this->generateSolvedSudoku(), targetDifficultyRating);
+}
+
 GameBoard *Generator::generateSudoku(GameBoard *solvedBoard, int targetDifficultyRating)
 {
     Possibility fieldsList[GameBoard::N * GameBoard::N];
@@ -66,7 +71,7 @@ GameBoard *Generator::generateSudoku(GameBoard *solvedBoard, int targetDifficult
         solver->preprocess();
         int result = solver->solve();
         
-        if (result >= 0)
+        if (result >= 0 && result <= targetDifficultyRating)
         {
             currentDifficultyRating = result;
             solvedBoard->setNumberAt(0, 0, 0);

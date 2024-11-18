@@ -15,8 +15,8 @@ int main(int argc, char const *argv[])
     int r = solver->solve();
     
     solvedBoard = solver->getBoard();
+    cout << r << ": ";
     solvedBoard->printGrid();
-    cout << r << endl;
 
     delete board;
     delete solver;
