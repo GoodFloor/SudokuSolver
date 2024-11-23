@@ -223,22 +223,208 @@ bool Solver::findHiddenSingles()
     return somethingChanged;
 }
 
-Solver::Solver(GameBoard *solutionBoard)
+bool Solver::findNakedPairs()
 {
+    bool somethingChanged = false;
+    // return somethingChanged;
+    int currentPair[2];
+
+    // Rows
+    for (int i = 0; i < GameBoard::N; i++)
+    {
+        // Check each cell
+        for (int j = 0; j < GameBoard::N - 1; j++)
+            // If 2 possibilities in a cell
+            if (possibilitiesBoard->getNumberOfPossibilitiesAt(i, j) == 2)
+            {
+                // Save them
+                int t = 0;
+                for (int k = 1; k <= GameBoard::N && t < 2; k++)
+                    if (possibilitiesBoard->isPossible(i, j, k))
+                    {
+                        currentPair[t] = k;
+                        t++;
+                    }
+                // Check each following cell
+                for (int k = j + 1; k < GameBoard::N; k++)
+                    // If this pair repeats
+                    if (possibilitiesBoard->getNumberOfPossibilitiesAt(i, k) == 2 && possibilitiesBoard->isPossible(i, k, currentPair[0]) && possibilitiesBoard->isPossible(i, k, currentPair[1]))
+                    {
+                        // // DEBUG START
+                        // printf("######## BEGIN ROW ########\n");
+                        // printf("(%i, %i) at (%i, %i) and (%i, %i)\n", currentPair[0], currentPair[1], i, j, i, k);
+                        // possibilitiesBoard->printPossibilities();
+                        // // DEBUG END
+                        // Remove this two numbers from other cells in this area;
+                        for (int l = 0; l < GameBoard::N; l++)
+                            if (l != j && l != k && (possibilitiesBoard->isPossible(i, l, currentPair[0]) || possibilitiesBoard->isPossible(i, l, currentPair[1])))
+                            {
+                                // // DEBUG START
+                                // printf("(%i, %i)\n", i, l);
+                                // // DEBUG END
+                                somethingChanged = true;
+                                possibilitiesBoard->setImpossible(i, l, currentPair[0]);
+                                possibilitiesBoard->setImpossible(i, l, currentPair[1]);
+                                if (possibilitiesBoard->getNumberOfPossibilitiesAt(i, l) == 0)
+                                    throw 11;
+                                else if (possibilitiesBoard->getNumberOfPossibilitiesAt(i, l) == 1)
+                                    if (!this->fillAndFix(i, l, possibilitiesBoard->getFirstPossibility(i, l)))
+                                        throw 11;
+                                
+                            }
+                        // // DEBUG START
+                        // possibilitiesBoard->printPossibilities();
+                        // printf("######## END ########\n");
+                        // // DEBUG END
+                        break;
+                    }
+            } 
+    }
+
+    // Columns
+    for (int i = 0; i < GameBoard::N; i++)
+    {
+        // Check each cell
+        for (int j = 0; j < GameBoard::N - 1; j++)
+            // If 2 possibilities in a cell
+            if (possibilitiesBoard->getNumberOfPossibilitiesAt(j, i) == 2)
+            {
+                // Save them
+                int t = 0;
+                for (int k = 1; k <= GameBoard::N && t < 2; k++)
+                    if (possibilitiesBoard->isPossible(j, i, k))
+                    {
+                        currentPair[t] = k;
+                        t++;
+                    }
+                // Check each following cell
+                for (int k = j + 1; k < GameBoard::N; k++)
+                    // If this pair repeats
+                    if (possibilitiesBoard->getNumberOfPossibilitiesAt(k, i) == 2 && possibilitiesBoard->isPossible(k, i, currentPair[0]) && possibilitiesBoard->isPossible(k, i, currentPair[1]))
+                    {
+                        // // DEBUG START
+                        // printf("######## BEGIN COLUMN ########\n");
+                        // printf("(%i, %i) at (%i, %i) and (%i, %i)\n", currentPair[0], currentPair[1], j, i, k, i);
+                        // possibilitiesBoard->printPossibilities();
+                        // // DEBUG END
+                        // Remove this two numbers from other cells in this area;
+                        for (int l = 0; l < GameBoard::N; l++)
+                            if (l != j && l != k && (possibilitiesBoard->isPossible(l, i, currentPair[0]) || possibilitiesBoard->isPossible(l, i, currentPair[1])))
+                            {
+                                // // DEBUG START
+                                // printf("(%i, %i)\n", l, i);
+                                // // DEBUG END
+                                somethingChanged = true;
+                                possibilitiesBoard->setImpossible(l, i, currentPair[0]);
+                                possibilitiesBoard->setImpossible(l, i, currentPair[1]);
+                                if (possibilitiesBoard->getNumberOfPossibilitiesAt(l, i) == 0)
+                                    throw 11;
+                                else if (possibilitiesBoard->getNumberOfPossibilitiesAt(l, i) == 1)
+                                    if (!this->fillAndFix(l, i, possibilitiesBoard->getFirstPossibility(l, i)))
+                                        throw 11;
+                                
+                            }
+                        // // DEBUG START
+                        // possibilitiesBoard->printPossibilities();
+                        // printf("######## END ########\n");
+                        // // DEBUG END
+                        break;
+                    }
+            } 
+    }
+
+    // Squares
+    int squareI = 0;
+    int squareJ = 0;
+    for (int i = 0; i < GameBoard::N; i++)
+    {
+        // Check each cell
+        for (int j = 0; j < GameBoard::N - 1; j++)
+            // If 2 possibilities in a cell
+            if (possibilitiesBoard->getNumberOfPossibilitiesAt(getSquareI(squareI, j), getSquareJ(squareJ, j)) == 2)
+            {
+                // Save them
+                int t = 0;
+                for (int k = 1; k <= GameBoard::N && t < 2; k++)
+                    if (possibilitiesBoard->isPossible(getSquareI(squareI, j), getSquareJ(squareJ, j), k))
+                    {
+                        currentPair[t] = k;
+                        t++;
+                    }
+                // Check each following cell
+                for (int k = j + 1; k < GameBoard::N; k++)
+                    // If this pair repeats
+                    if (possibilitiesBoard->getNumberOfPossibilitiesAt(getSquareI(squareI, k), getSquareJ(squareJ, k)) == 2 && possibilitiesBoard->isPossible(getSquareI(squareI, k), getSquareJ(squareJ, k), currentPair[0]) && possibilitiesBoard->isPossible(getSquareI(squareI, k), getSquareJ(squareJ, k), currentPair[1]))
+                    {
+                        // // DEBUG START
+                        // printf("######## BEGIN SQUARE ########\n");
+                        // printf("(%i, %i) at (%i, %i) and (%i, %i)\n", currentPair[0], currentPair[1], getSquareI(squareI, j), getSquareJ(squareJ, j), getSquareI(squareI, k), getSquareJ(squareJ, k));
+                        // possibilitiesBoard->printPossibilities();
+                        // // DEBUG END
+                        // Remove this two numbers from other cells in this area;
+                        for (int l = 0; l < GameBoard::N; l++)
+                            if (l != j && l != k && (possibilitiesBoard->isPossible(getSquareI(squareI, l), getSquareJ(squareJ, l), currentPair[0]) || possibilitiesBoard->isPossible(getSquareI(squareI, l), getSquareJ(squareJ, l), currentPair[1])))
+                            {
+                                // // DEBUG START
+                                // printf("(%i, %i)\n", getSquareI(squareI, l), getSquareJ(squareJ, l));
+                                // // DEBUG END
+                                somethingChanged = true;
+                                possibilitiesBoard->setImpossible(getSquareI(squareI, l), getSquareJ(squareJ, l), currentPair[0]);
+                                possibilitiesBoard->setImpossible(getSquareI(squareI, l), getSquareJ(squareJ, l), currentPair[1]);
+                                if (possibilitiesBoard->getNumberOfPossibilitiesAt(getSquareI(squareI, l), getSquareJ(squareJ, l)) == 0)
+                                    throw 11;
+                                else if (possibilitiesBoard->getNumberOfPossibilitiesAt(getSquareI(squareI, l), getSquareJ(squareJ, l)) == 1)
+                                    if (!this->fillAndFix(getSquareI(squareI, l), getSquareJ(squareJ, l), possibilitiesBoard->getFirstPossibility(getSquareI(squareI, l), getSquareJ(squareJ, l))))
+                                        throw 11;
+                                
+                            }
+                        // // DEBUG START
+                        // possibilitiesBoard->printPossibilities();
+                        // printf("######## END ########\n");
+                        // // DEBUG END
+                        break;
+                    }
+            } 
+        squareJ = (squareJ + GameBoard::SIZE) % GameBoard::N;
+        if (squareJ == 0)
+            squareI += GameBoard::SIZE;
+        
+    }    
+    // // DEBUG START
+    // printf("######## RESULT: %i ########\n", somethingChanged);
+    // // DEBUG END
+    return somethingChanged;
+}
+
+int Solver::getSquareI(int rootI, int offset)
+{
+    int offsetI = offset / GameBoard::SIZE;
+    return rootI + offsetI;
+}
+
+int Solver::getSquareJ(int rootJ, int offset)
+{
+    int offsetJ = offset % GameBoard::SIZE;
+    return rootJ + offsetJ;
+}
+
+Solver::Solver(GameBoard *solutionBoard) : Solver(solutionBoard, false) {}
+
+Solver::Solver(GameBoard *solutionBoard, bool checkForMultipleSolutions)
+{
+    this->checkForMultipleSolutions = checkForMultipleSolutions;
     this->solutionBoard = new GameBoard(solutionBoard);
     this->possibilitiesBoard = new PossibilitiesBoard();
     unknowns = 0;
-    this->checkForMultipleSolutions = false;
+    this->preprocess();
 }
 
-Solver::Solver(GameBoard *solutionBoard, bool checkForMultipleSolutions) : Solver(solutionBoard)
+Solver::Solver(Solver *solver)
 {
-    this->checkForMultipleSolutions = checkForMultipleSolutions;
-}
-
-Solver::Solver(GameBoard *solutionBoard, PossibilitiesBoard *possibilitiesBoard, bool checkForMultpileSolutions) : Solver(solutionBoard, checkForMultpileSolutions)
-{
-    this->possibilitiesBoard = new PossibilitiesBoard(possibilitiesBoard);
+    this->checkForMultipleSolutions = solver->checkForMultipleSolutions;
+    this->unknowns = solver->unknowns;
+    this->solutionBoard = new GameBoard(solver->solutionBoard);
+    this->possibilitiesBoard = new PossibilitiesBoard(solver->possibilitiesBoard);
 }
 
 Solver::~Solver()
@@ -287,6 +473,13 @@ int Solver::solve()
             {
                 if (this->findHiddenSingles())
                 {
+                    // printf("Found hidden singles\n");
+                    somethingChanged = true;
+                    difficultyRating += 1;
+                }
+                if (this->findNakedPairs())
+                {
+                    // printf("Found naked pairs\n");
                     somethingChanged = true;
                     difficultyRating += 1;
                 }
@@ -295,6 +488,8 @@ int Solver::solve()
             {
                 return -1;
             }
+            // if (somethingChanged)
+            //     possibilitiesBoard->printPossibilities();
         }
         if (unknowns == 0)
             return difficultyRating;
@@ -341,7 +536,7 @@ int Solver::solve()
         for (int i = 0; i < leastPossibilities; i++)
         {
             // Create copy of solver
-            Solver* s = new Solver(solutionBoard, possibilitiesBoard, checkForMultipleSolutions);
+            Solver* s = new Solver(this);
             s->unknowns = this->unknowns;
             // If inserting this possibility into the grid causes error
             if (!s->fillAndFix(bestI, bestJ, fieldPossibilities[i]))

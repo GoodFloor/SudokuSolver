@@ -9,13 +9,12 @@ int main(int argc, char const *argv[])
     GameBoard* solvedBoard = nullptr;
     board->loadGrid();
     board->printGrid();
-    Solver* solver = new Solver(board, true);
-    solver->preprocess();
+    Solver* solver = new Solver(board, false);
     solver->printPossibilities();
     int r = solver->solve();
     
     solvedBoard = solver->getBoard();
-    cout << r << ": ";
+    cout << r << ": \n";
     solvedBoard->printGrid();
 
     delete board;

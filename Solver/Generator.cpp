@@ -25,7 +25,6 @@ GameBoard *Generator::generateSolvedSudoku()
         newGrid->setNumberAt(0, i, firstRow[i]);
     Solver* gridFiller = new Solver(newGrid, false);
     delete newGrid;
-    gridFiller->preprocess();
     gridFiller->solve();
     newGrid = gridFiller->exportBoard();
     delete gridFiller;
@@ -68,7 +67,6 @@ GameBoard *Generator::generateSudoku(GameBoard *solvedBoard, int targetDifficult
     {
         solver = new Solver(solvedBoard, true);
         solver->getBoard()->setNumberAt(fieldsList[i].i, fieldsList[i].j, 0);
-        solver->preprocess();
         int result = solver->solve();
         
         if (result >= 0 && result <= targetDifficultyRating)

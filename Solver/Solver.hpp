@@ -16,10 +16,13 @@ private:
     bool fillAndFix(int x, int y, int z);
     void findSolvedCells(); // Also known as Naked Singles
     bool findHiddenSingles();
+    bool findNakedPairs();
 public:
+    int getSquareI(int rootI, int offset);
+    int getSquareJ(int rootJ, int offset);
     Solver(GameBoard* solutionBoard);
     Solver(GameBoard* solutionBoard, bool checkForMultpileSolutions);
-    Solver(GameBoard* solutionBoard, PossibilitiesBoard* possibilitiesBoard, bool checkForMultpileSolutions);
+    Solver(Solver* solver);
     ~Solver();
     GameBoard* getBoard();
     // Returns board and removes link to it

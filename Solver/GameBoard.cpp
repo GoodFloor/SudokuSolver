@@ -41,39 +41,39 @@ void GameBoard::loadGrid()
 
 void GameBoard::printGrid()
 {
-    for (int i = 0; i < GameBoard::N; i++)
-        for (int j = 0; j < GameBoard::N; j++)
-            printf("%i", this->getNumberAt(i, j));
-    printf("\n");
+    // for (int i = 0; i < GameBoard::N; i++)
+    //     for (int j = 0; j < GameBoard::N; j++)
+    //         printf("%i", this->getNumberAt(i, j));
+    // printf("\n");
     
-    // for (int i = 0; i <= GameBoard::N * 4; i++)
-    // {
-    //     for (int j = 0; j <= GameBoard::N * 4; j++)
-    //     {
-    //         // Pogrubione linie
-    //         if (i % (GameBoard::SIZE * 4) == 0 || j % (GameBoard::SIZE * 4) == 0)
-    //             std::cout << "█";
-    //         // Skrzyżowania
-    //         else if (i % 4 == 0 && j % 4 == 0)
-    //             std::cout << "┼";
-    //         // Pionowe linie
-    //         else if (j % 4 == 0)    
-    //             std::cout << "│";
-    //         // Poziome linie
-    //         else if (i % 4 == 0)    
-    //             std::cout << "─";
-    //         // Rozwiązane pola (9-...)   
-    //         else if (i % 4 == 2 && j % 4 == 2 && this->getNumberAt(i / 4, j / 4) > 9)
-    //             std::cout << (char)((this->getNumberAt(i / 4, j / 4) - 10) + 'A');
-    //         // Rozwiązane pola (1-9)
-    //         else if (i % 4 == 2 && j % 4 == 2 && this->getNumberAt(i / 4, j / 4) != 0)
-    //             std::cout << this->getNumberAt(i / 4, j / 4);
-    //         else
-    //             std::cout << " ";
-    //     }
-    //     std::cout << std::endl;
-    // }
-    // std::cout << std::endl;
+    for (int i = 0; i <= GameBoard::N * 4; i++)
+    {
+        for (int j = 0; j <= GameBoard::N * 4; j++)
+        {
+            // Pogrubione linie
+            if (i % (GameBoard::SIZE * 4) == 0 || j % (GameBoard::SIZE * 4) == 0)
+                std::cout << "█";
+            // Skrzyżowania
+            else if (i % 4 == 0 && j % 4 == 0)
+                std::cout << "┼";
+            // Pionowe linie
+            else if (j % 4 == 0)    
+                std::cout << "│";
+            // Poziome linie
+            else if (i % 4 == 0)    
+                std::cout << "─";
+            // Rozwiązane pola (9-...)   
+            else if (i % 4 == 2 && j % 4 == 2 && this->getNumberAt(i / 4, j / 4) > 9)
+                std::cout << (char)((this->getNumberAt(i / 4, j / 4) - 10) + 'A');
+            // Rozwiązane pola (1-9)
+            else if (i % 4 == 2 && j % 4 == 2 && this->getNumberAt(i / 4, j / 4) != 0)
+                std::cout << this->getNumberAt(i / 4, j / 4);
+            else
+                std::cout << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 int GameBoard::getNumberAt(int x, int y)
