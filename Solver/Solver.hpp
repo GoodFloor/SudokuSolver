@@ -11,15 +11,16 @@ private:
     GameBoard* solutionBoard;
     PossibilitiesBoard* possibilitiesBoard;
     int unknowns;
+    bool usedAsNakedPair[GameBoard::N][GameBoard::N][3];
     void findPossibilitiesAt(int x, int y);
     void findAllPossibilities();
     bool fillAndFix(int x, int y, int z);
     void findSolvedCells(); // Also known as Naked Singles
     bool findHiddenSingles();
     bool findNakedPairs();
-public:
     int getSquareI(int rootI, int offset);
     int getSquareJ(int rootJ, int offset);
+public:
     Solver(GameBoard* solutionBoard);
     Solver(GameBoard* solutionBoard, bool checkForMultpileSolutions);
     Solver(Solver* solver);

@@ -235,7 +235,7 @@ bool Solver::findNakedPairs()
         // Check each cell
         for (int j = 0; j < GameBoard::N - 1; j++)
             // If 2 possibilities in a cell
-            if (possibilitiesBoard->getNumberOfPossibilitiesAt(i, j) == 2)
+            if (!usedAsNakedPair[i][j][0] && possibilitiesBoard->getNumberOfPossibilitiesAt(i, j) == 2)
             {
                 // Save them
                 int t = 0;
@@ -256,6 +256,8 @@ bool Solver::findNakedPairs()
                         // possibilitiesBoard->printPossibilities();
                         // // DEBUG END
                         // Remove this two numbers from other cells in this area;
+                        usedAsNakedPair[i][j][0] = true;
+                        usedAsNakedPair[i][k][0] = true;
                         for (int l = 0; l < GameBoard::N; l++)
                             if (l != j && l != k && (possibilitiesBoard->isPossible(i, l, currentPair[0]) || possibilitiesBoard->isPossible(i, l, currentPair[1])))
                             {
@@ -287,7 +289,7 @@ bool Solver::findNakedPairs()
         // Check each cell
         for (int j = 0; j < GameBoard::N - 1; j++)
             // If 2 possibilities in a cell
-            if (possibilitiesBoard->getNumberOfPossibilitiesAt(j, i) == 2)
+            if (!usedAsNakedPair[j][i][1] && possibilitiesBoard->getNumberOfPossibilitiesAt(j, i) == 2)
             {
                 // Save them
                 int t = 0;
@@ -308,6 +310,8 @@ bool Solver::findNakedPairs()
                         // possibilitiesBoard->printPossibilities();
                         // // DEBUG END
                         // Remove this two numbers from other cells in this area;
+                        usedAsNakedPair[j][i][1] = true;
+                        usedAsNakedPair[k][i][1] = true;
                         for (int l = 0; l < GameBoard::N; l++)
                             if (l != j && l != k && (possibilitiesBoard->isPossible(l, i, currentPair[0]) || possibilitiesBoard->isPossible(l, i, currentPair[1])))
                             {
@@ -341,7 +345,7 @@ bool Solver::findNakedPairs()
         // Check each cell
         for (int j = 0; j < GameBoard::N - 1; j++)
             // If 2 possibilities in a cell
-            if (possibilitiesBoard->getNumberOfPossibilitiesAt(getSquareI(squareI, j), getSquareJ(squareJ, j)) == 2)
+            if (!usedAsNakedPair[getSquareI(squareI, j)][getSquareJ(squareJ, j)][2] && possibilitiesBoard->getNumberOfPossibilitiesAt(getSquareI(squareI, j), getSquareJ(squareJ, j)) == 2)
             {
                 // Save them
                 int t = 0;
@@ -361,6 +365,8 @@ bool Solver::findNakedPairs()
                         // printf("(%i, %i) at (%i, %i) and (%i, %i)\n", currentPair[0], currentPair[1], getSquareI(squareI, j), getSquareJ(squareJ, j), getSquareI(squareI, k), getSquareJ(squareJ, k));
                         // possibilitiesBoard->printPossibilities();
                         // // DEBUG END
+                        usedAsNakedPair[getSquareI(squareI, j)][getSquareJ(squareJ, j)][2] = true;
+                        usedAsNakedPair[getSquareI(squareI, k)][getSquareJ(squareJ, k)][2] = true;
                         // Remove this two numbers from other cells in this area;
                         for (int l = 0; l < GameBoard::N; l++)
                             if (l != j && l != k && (possibilitiesBoard->isPossible(getSquareI(squareI, l), getSquareJ(squareJ, l), currentPair[0]) || possibilitiesBoard->isPossible(getSquareI(squareI, l), getSquareJ(squareJ, l), currentPair[1])))
@@ -417,6 +423,11 @@ Solver::Solver(GameBoard *solutionBoard, bool checkForMultipleSolutions)
     this->possibilitiesBoard = new PossibilitiesBoard();
     unknowns = 0;
     this->preprocess();
+    for (int i = 0; i < GameBoard::N; i++)
+        for (int j = 0; j < GameBoard::N; j++)
+            for (int k = 0; k < 3; k++)
+                usedAsNakedPair[i][j][k] = false;
+    
 }
 
 Solver::Solver(Solver *solver)
@@ -425,6 +436,10 @@ Solver::Solver(Solver *solver)
     this->unknowns = solver->unknowns;
     this->solutionBoard = new GameBoard(solver->solutionBoard);
     this->possibilitiesBoard = new PossibilitiesBoard(solver->possibilitiesBoard);
+    for (int i = 0; i < GameBoard::N; i++)
+        for (int j = 0; j < GameBoard::N; j++)
+            for (int k = 0; k < 3; k++)
+                usedAsNakedPair[i][j][k] = solver->usedAsNakedPair[i][j][k];
 }
 
 Solver::~Solver()
@@ -476,12 +491,14 @@ int Solver::solve()
                     // printf("Found hidden singles\n");
                     somethingChanged = true;
                     difficultyRating += 1;
+                    continue;
                 }
                 if (this->findNakedPairs())
                 {
                     // printf("Found naked pairs\n");
                     somethingChanged = true;
                     difficultyRating += 1;
+                    continue;
                 }
             }
             catch(const int e)
