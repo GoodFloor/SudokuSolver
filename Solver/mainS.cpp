@@ -14,8 +14,8 @@ int main(int argc, char const *argv[])
         // board->printGrid();
         Solver* solver = new Solver(board, true);
         // solver->printPossibilities();
-        int r = solver->solve();
-        // solver->test();
+        // int r = solver->solve();
+        solver->test();
         
         // solvedBoard = solver->getBoard();
         // cout << 1 << " = " << r << endl;

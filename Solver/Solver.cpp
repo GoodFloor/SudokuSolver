@@ -316,6 +316,79 @@ bool Solver::findNakedPairs()
     return somethingChanged;
 }
 
+bool Solver::findPointingNumbers()
+{
+    bool somethingChanged = false;
+    // For each row
+    for (int i = 0; i < GameBoard::N; i++)
+    {
+        // Remembers if given number didn't appear yet (-1), appear in multiple or none of regions (-2) or appeared in one region only (number of this region)
+        int region[GameBoard::N];
+        for (int k = 0; k < GameBoard::N; k++)
+            region[k] = -1;
+        // How many numbers are assigned sth > -2
+        int possiblePointingPairs = GameBoard::N;
+        // For each cell in a row
+        for (int j = 0; j < GameBoard::N && possiblePointingPairs > 0; j++)
+        {
+            int num = solutionBoard->getNumberAt(i, j);
+            // Num
+            if (num > 0)
+            {
+                region[num - 1] = -2;
+                possiblePointingPairs--;
+                continue;
+            }
+            int regionI = i / GameBoard::SIZE * GameBoard::SIZE;
+            int regionJ = j / GameBoard::SIZE * GameBoard::SIZE;
+            int regionId = regionI + regionJ / GameBoard::SIZE;
+            // For each possibility
+            for (int p = 1; p <= GameBoard::N; p++)
+            {
+                if (region[p - 1] == -2 || !possibilitiesBoard->isPossible(i, j, p))
+                    continue;
+                
+                // Possibility didn't appear before
+                if (region[p - 1] == -1)
+                {
+                    region[p - 1] = regionId;
+                }
+                // Possibility appeared in different region
+                else if (region[p - 1] != regionId)
+                {
+                    region[p - 1] = -2;
+                    possiblePointingPairs--;
+                }
+            }
+        }
+        // For each possibility
+        for (int p = 1; p <= GameBoard::N && possiblePointingPairs > 0; p++)
+        {
+            // It appeared in multiple or none regions
+            if (region[p - 1] < 0)
+                continue;
+            
+            // In that region remove it from all other cells
+            int regionRootI = region[p - 1] / GameBoard::SIZE * GameBoard::SIZE;
+            int regionRootJ = region[p - 1] % GameBoard::SIZE * GameBoard::SIZE;
+            for (int k = 0; k < GameBoard::N; k++)
+            {
+                int ii = getSquareI(regionRootI, k);
+                int jj = getSquareJ(regionRootJ, k);
+                if (ii == i || solutionBoard->getNumberAt(ii, jj) > 0)
+                    continue;
+                if (possibilitiesBoard->isPossible(ii, jj, p))
+                {
+                    somethingChanged = true;
+                    possibilitiesBoard->setImpossible(ii, jj, p);
+                }
+            }  
+        }
+    }
+    
+    return somethingChanged;
+}
+
 int Solver::getSquareI(int rootI, int offset)
 {
     int offsetI = offset / GameBoard::SIZE;
@@ -415,10 +488,17 @@ int Solver::solve()
                 {
                     // printf("Found naked pairs\n");
                     somethingChanged = true;
-                    difficultyRating += 1;
+                    difficultyRating += 2;
                     nakedPairsFound++;
                     continue;
                 }
+                // if (this->findPointingNumbers())
+                // {
+                //     somethingChanged = true;
+                //     difficultyRating += 2;
+                //     continue;
+                // }
+                
             }
             catch(const int e)
             {
@@ -553,6 +633,6 @@ void Solver::printPossibilities()
 void Solver::test()
 {
     possibilitiesBoard->printPossibilities();
-    findNakedPairs();
+    findPointingNumbers();
     possibilitiesBoard->printPossibilities();
 }

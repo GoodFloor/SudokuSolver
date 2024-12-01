@@ -18,6 +18,7 @@ private:
     void findSolvedCells(); // Also known as Naked Singles
     bool findHiddenSingles();
     bool findNakedPairs();
+    bool findPointingNumbers();
     int getSquareI(int rootI, int offset);
     int getSquareJ(int rootJ, int offset);
 public:
