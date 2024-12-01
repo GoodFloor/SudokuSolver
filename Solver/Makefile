@@ -1,5 +1,5 @@
 executables = solver generator
-commonObjectFiles = GameBoard.o PossibilitiesBoard.o Solver.o
+commonObjectFiles = GameBoard.o PossibilitiesBoard.o Solver.o Statistics.o
 solverObjectFiles = ${commonObjectFiles} mainS.o
 generatorObjectFiles = ${commonObjectFiles} Generator.o mainG.o
 

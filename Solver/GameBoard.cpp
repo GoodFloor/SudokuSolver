@@ -7,7 +7,7 @@ GameBoard::GameBoard()
 {
     for (int i = 0; i < N; i++)
         for (int j = 0; j < N; j++)
-            grid[i][j] = 0; 
+            grid[i][j] = 0;
 }
 
 GameBoard::~GameBoard()
@@ -43,7 +43,13 @@ void GameBoard::printGrid()
 {
     for (int i = 0; i < GameBoard::N; i++)
         for (int j = 0; j < GameBoard::N; j++)
-            printf("%i", this->getNumberAt(i, j));
+        {
+            int n = this->getNumberAt(i, j);
+            if (n < 10)
+                printf("%i", n);
+            else 
+                printf("%c", (char)((n - 10) + 'A'));
+        }
     printf("\n");
     
     // for (int i = 0; i <= GameBoard::N * 4; i++)

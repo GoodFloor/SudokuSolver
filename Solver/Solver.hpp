@@ -34,6 +34,7 @@ public:
 
 
     void printPossibilities();
+    void test();
 };
 
 #endif
