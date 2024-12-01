@@ -1,0 +1,12 @@
+Generated boards: 1000000
+Maximum number of unknowns: 12
+Maximum difficulty: 0
+Average difficulty: 0
+Maximum depth: 1
+Average depth: 1
+Average number of hiddenSingles() used: 0
+Average number of nakedPairs() used: 0
+Unknowns summary: 
+	(10, 3722)
+	(11, 305735)
+	(12, 690543)
