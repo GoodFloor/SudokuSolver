@@ -625,6 +625,48 @@ int Solver::solve()
     return difficultyRating;
 }
 
+int Solver::solveWithoutGuessing()
+{
+    int difficultyRating = 0;
+    bool somethingChanged = true;
+    while (unknowns > 0 && somethingChanged)
+    {
+        somethingChanged = false;
+            try
+            {
+                if (this->findHiddenSingles())
+                {
+                    // printf("Found hidden singles\n");
+                    somethingChanged = true;
+                    difficultyRating += 1;
+                    continue;
+                }
+                if (this->findNakedPairs())
+                {
+                    // printf("Found naked pairs\n");
+                    somethingChanged = true;
+                    difficultyRating += 2;
+                    continue;
+                }
+                // if (this->findPointingNumbers())
+                // {
+                //     somethingChanged = true;
+                //     difficultyRating += 2;
+                //     continue;
+                // }
+                
+            }
+            catch(const int e)
+            {
+                Statistics::exitSolve();
+                return -1;
+            }
+    }
+    if (unknowns > 0)
+        return -1;
+    return difficultyRating;
+}
+
 void Solver::printPossibilities()
 {
     possibilitiesBoard->printPossibilities();

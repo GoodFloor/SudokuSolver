@@ -32,6 +32,7 @@ public:
     void preprocess();
     // @return -1 if no solutions, -2 if multiple solution, board difficulty rating otherwise
     int solve();
+    int solveWithoutGuessing();
 
 
     void printPossibilities();

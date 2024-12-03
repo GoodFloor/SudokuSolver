@@ -34,11 +34,11 @@ int main(int argc, char const *argv[])
         unknownsData[i] = 0;
     
     // Generating and testing boards
-    int targetPermutations = 1;
+    int targetPermutations = 100'000;
     for (int i = 1; i <= targetPermutations && breakFlag; i++)
     {
         Generator* generator = new Generator();
-        GameBoard* board = generator->generateSudoku();
+        GameBoard* board = generator->generateSudokuWithoutGuessing();
         delete generator;
         // board->printGrid();
 

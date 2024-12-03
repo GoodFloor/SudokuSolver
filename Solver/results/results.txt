@@ -1,5 +1,5 @@
-4x4 (1 000 000):
-    Generated boards: 1000000
+4x4:
+    Generated boards: 1 000 000
     Maximum number of unknowns: 12
     Maximum difficulty: 0
     Average difficulty: 0
@@ -12,8 +12,8 @@
         (11, 305735)
         (12, 690543)
 
-9x9 (1 000 000):
-    Generated boards: 1000000
+9x9:
+    Generated boards: 1 000 000
     Maximum number of unknowns: 61
     Maximum difficulty: 139
     Average difficulty: 13.6934
@@ -35,17 +35,28 @@
         (61, 52)
         (62, 1)
 
-16x16 (100):
-    (156, 2)
-    (157, 2)
-    (158, 6)
-    (159, 6)
-    (160, 11)
-    (161, 17)
-    (162, 14)
-    (163, 23)
-    (164, 6)
-    (165, 7)
-    (166, 5)
-    (167, 1)
-
+16x16:
+	Generated boards: 522
+    Maximum number of unknowns: 169
+    Maximum difficulty: 325
+    Average difficulty: 165.657
+    Maximum depth: 50
+    Average depth: 23.2452
+    Average number of hiddenSingles() used: 15.5728
+    Average number of nakedPairs() used: 3.98851
+    Unknowns summary: 
+        (155, 2)
+        (156, 6)
+        (157, 5)
+        (158, 16)
+        (159, 44)
+        (160, 53)
+        (161, 82)
+        (162, 99)
+        (163, 67)
+        (164, 56)
+        (165, 41)
+        (166, 28)
+        (167, 16)
+        (168, 5)
+        (169, 2)

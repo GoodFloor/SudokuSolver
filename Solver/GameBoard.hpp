@@ -4,7 +4,7 @@
 class GameBoard
 {
 public:
-    static const int SIZE = 4;
+    static const int SIZE = 3;
     static const int N = SIZE * SIZE;
 private:
     int grid[N][N];

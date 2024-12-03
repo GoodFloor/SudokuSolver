@@ -35,12 +35,7 @@ GameBoard *Generator::generateSolvedSudoku()
 
 GameBoard *Generator::generateSudoku()
 {
-    return generateSudoku(this->generateSolvedSudoku());
-}
-
-GameBoard *Generator::generateSudoku(GameBoard *solvedBoard)
-{
-    return generateSudoku(solvedBoard, INT32_MAX);
+    return generateSudoku(this->generateSolvedSudoku(), INT32_MAX);
 }
 
 GameBoard *Generator::generateSudoku(int targetDifficultyRating)
@@ -82,3 +77,46 @@ GameBoard *Generator::generateSudoku(GameBoard *solvedBoard, int targetDifficult
     return solvedBoard;
 }
 
+GameBoard *Generator::generateSudokuWithoutGuessing()
+{
+    return generateSudokuWithoutGuessing(this->generateSolvedSudoku(), INT32_MAX);
+}
+
+GameBoard *Generator::generateSudokuWithoutGuessing(int targetDifficultyRating)
+{
+    return generateSudokuWithoutGuessing(this->generateSolvedSudoku(), targetDifficultyRating);
+}
+
+GameBoard *Generator::generateSudokuWithoutGuessing(GameBoard *solvedBoard, int targetDifficultyRating)
+{
+    Possibility fieldsList[GameBoard::N * GameBoard::N];
+    for (int i = 0; i < GameBoard::N; i++)
+        for (int j = 0; j < GameBoard::N; j++)
+        {
+            Possibility curr;
+            curr.i = i;
+            curr.j = j;
+            curr.p = solvedBoard->getNumberAt(i, j);
+            fieldsList[i * GameBoard::N + j] = curr;
+        }
+
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::shuffle(&fieldsList[0], &fieldsList[GameBoard::N * GameBoard::N], mt);
+
+    Solver* solver;
+    for (int i = 0; i < GameBoard::N * GameBoard::N; i++)
+    {
+        GameBoard* copyBoard = new GameBoard(solvedBoard);
+        copyBoard->setNumberAt(fieldsList[i].i, fieldsList[i].j, 0);
+        solver = new Solver(copyBoard, true);
+        int result = solver->solveWithoutGuessing();
+        
+        if (result >= 0 && result <= targetDifficultyRating)
+            solvedBoard->setNumberAt(fieldsList[i].i, fieldsList[i].j, 0);
+        
+        delete copyBoard;
+        delete solver;
+    }
+    return solvedBoard;
+}
