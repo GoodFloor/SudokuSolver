@@ -33,6 +33,6 @@
 
 # Custom
 Solver/solver
+Solver/generator
 Solver/.vscode
 /.vscode
-Solver/generator
