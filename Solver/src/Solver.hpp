@@ -16,8 +16,8 @@ private:
     void findAllPossibilities();
     bool fillAndFix(int x, int y, int z);
     void findSolvedCells(); // Also known as Naked Singles
-    bool findHiddenSingles();
-    bool findNakedPairs();
+    int findHiddenSingles();
+    int findNakedPairs();
     bool findPointingNumbers();
     int getSquareI(int rootI, int offset);
     int getSquareJ(int rootJ, int offset);
@@ -33,7 +33,7 @@ public:
     // @return -1 if no solutions, -2 if multiple solution, board difficulty rating otherwise
     int solve();
     int solveWithoutGuessing();
-
+    int normalizeDifficulty(GameBoard* originalBoard, int difficulty);
 
     void printPossibilities();
     void test();

@@ -1,9 +1,9 @@
-#include "GameBoard.hpp"
+#include <list>
 #include "Solver.hpp"
 
-bool Solver::findHiddenSingles()
+int Solver::findHiddenSingles()
 {
-    bool somethingChanged = false;
+    int foundCounter = 0;
     int counter[GameBoard::N];
     int lastPosition[GameBoard::N][2];
     
@@ -26,12 +26,12 @@ bool Solver::findHiddenSingles()
         // Check which number appears only once in this row
         for (int k = 0; k < GameBoard::N; k++)
             if (counter[k] == 1)
-            {
+            {  
+                foundCounter++;
                 // solutionBoard->printGrid();
                 // possibilitiesBoard->printPossibilities();
                 if (!this->fillAndFix(lastPosition[k][0], lastPosition[k][1], k + 1))
                     throw 11;
-                somethingChanged = true;
             }
     }
     // Columns
@@ -54,9 +54,9 @@ bool Solver::findHiddenSingles()
         for (int k = 0; k < GameBoard::N; k++)
             if (counter[k] == 1)
             {
+                foundCounter++;
                 if (!this->fillAndFix(lastPosition[k][0], lastPosition[k][1], k + 1))
                     throw 11;
-                somethingChanged = true;
             }
     }
     // Squares
@@ -91,18 +91,18 @@ bool Solver::findHiddenSingles()
         for (int k = 0; k < GameBoard::N; k++)
             if (counter[k] == 1)
             {
+                foundCounter++;
                 if (!this->fillAndFix(lastPosition[k][0], lastPosition[k][1], k + 1))
                     throw 11;
-                somethingChanged = true;
             }
     }
 
-    return somethingChanged;
+    return foundCounter;
 }
 
-bool Solver::findNakedPairs()
+int Solver::findNakedPairs()
 {
-    bool somethingChanged = false;
+    int foundCounter = 0;
     int currentPair[2];
 
     // For each cell
@@ -119,7 +119,7 @@ bool Solver::findNakedPairs()
                         currentPair[t] = k;
                         t++;
                     }
-                
+                bool flag = true;
                 // Find same pair in row
                 for (int k = j + 1; k < GameBoard::N && !usedAsNakedPair[i][j][0]; k++)
                     if (possibilitiesBoard->getNumberOfPossibilitiesAt(i, k) == 2 && possibilitiesBoard->isPossible(i, k, currentPair[0]) && possibilitiesBoard->isPossible(i, k, currentPair[1]))
@@ -130,7 +130,11 @@ bool Solver::findNakedPairs()
                         for (int l = 0; l < GameBoard::N; l++)
                             if (l != j && l != k && (possibilitiesBoard->isPossible(i, l, currentPair[0]) || possibilitiesBoard->isPossible(i, l, currentPair[1])))
                             {
-                                somethingChanged = true;
+                                if (flag)
+                                {
+                                    flag = false;
+                                    foundCounter++;
+                                }
                                 possibilitiesBoard->setImpossible(i, l, currentPair[0]);
                                 possibilitiesBoard->setImpossible(i, l, currentPair[1]);
                                 if (possibilitiesBoard->getNumberOfPossibilitiesAt(i, l) == 0)
@@ -142,6 +146,7 @@ bool Solver::findNakedPairs()
                         break;
                     }
                 
+                flag = true;
                 // Find same pair in column
                 for (int k = i + 1; k < GameBoard::N && !usedAsNakedPair[i][j][1]; k++)
                     if (possibilitiesBoard->getNumberOfPossibilitiesAt(k, j) == 2 && possibilitiesBoard->isPossible(k, j, currentPair[0]) && possibilitiesBoard->isPossible(k, j, currentPair[1]))
@@ -152,7 +157,11 @@ bool Solver::findNakedPairs()
                         for (int l = 0; l < GameBoard::N; l++)
                             if (l != i && l != k && (possibilitiesBoard->isPossible(l, j, currentPair[0]) || possibilitiesBoard->isPossible(l, j, currentPair[1])))
                             {
-                                somethingChanged = true;
+                                if (flag)
+                                {
+                                    flag = false;
+                                    foundCounter++;
+                                }
                                 possibilitiesBoard->setImpossible(l, j, currentPair[0]);
                                 possibilitiesBoard->setImpossible(l, j, currentPair[1]);
                                 if (possibilitiesBoard->getNumberOfPossibilitiesAt(l, j) == 0)
@@ -163,7 +172,8 @@ bool Solver::findNakedPairs()
                             }
                         break;
                     }
-                
+
+                flag = true;
                 // Find same pair in region
                 int regionRootI = i / GameBoard::SIZE * GameBoard::SIZE;
                 int regionRootJ = j / GameBoard::SIZE * GameBoard::SIZE;
@@ -177,7 +187,11 @@ bool Solver::findNakedPairs()
                         for (int l = 0; l < GameBoard::N; l++)
                             if (!(getSquareI(regionRootI, l) == i && getSquareJ(regionRootJ, l) == j) && l != k && (possibilitiesBoard->isPossible(getSquareI(regionRootI, l), getSquareJ(regionRootJ, l), currentPair[0]) || possibilitiesBoard->isPossible(getSquareI(regionRootI, l), getSquareJ(regionRootJ, l), currentPair[1])))
                             {
-                                somethingChanged = true;
+                                if (flag)
+                                {
+                                    flag = false;
+                                    foundCounter++;
+                                }
                                 possibilitiesBoard->setImpossible(getSquareI(regionRootI, l), getSquareJ(regionRootJ, l), currentPair[0]);
                                 possibilitiesBoard->setImpossible(getSquareI(regionRootI, l), getSquareJ(regionRootJ, l), currentPair[1]);
                                 if (possibilitiesBoard->getNumberOfPossibilitiesAt(getSquareI(regionRootI, l), getSquareJ(regionRootJ, l)) == 0)
@@ -189,7 +203,7 @@ bool Solver::findNakedPairs()
                         break;
                     }
             }
-    return somethingChanged;
+    return foundCounter;
 }
 
 bool Solver::findPointingNumbers()

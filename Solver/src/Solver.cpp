@@ -206,53 +206,43 @@ int Solver::solve()
     while (unknowns > 0)
     {
         // Use clever algorythms to eliminate possibilities
-        bool somethingChanged = true;
-        while (somethingChanged)
+        try
         {
-            somethingChanged = false;
-            try
+            int r = this->findHiddenSingles();
+            if (r > 0)
             {
-                if (this->findHiddenSingles())
-                {
-                    // printf("Found hidden singles\n");
-                    somethingChanged = true;
-                    difficultyRating += 1;
-                    hiddenSinglesFound++;
-                    continue;
-                }
-                if (this->findNakedPairs())
-                {
-                    // printf("Found naked pairs\n");
-                    somethingChanged = true;
-                    difficultyRating += 2;
-                    nakedPairsFound++;
-                    continue;
-                }
-                // if (this->findPointingNumbers())
-                // {
-                //     somethingChanged = true;
-                //     difficultyRating += 2;
-                //     continue;
-                // }
-                
+                // printf("Found hidden singles\n");
+                difficultyRating += r;
+                hiddenSinglesFound += r;
+                continue;
             }
-            catch(const int e)
+            r = this->findNakedPairs();
+            if (r > 0)
             {
-                Statistics::exitSolve();
-                return -1;
+                // printf("Found naked pairs\n");
+                difficultyRating += r * 2;
+                nakedPairsFound += r;
+                continue;
             }
+            // if (this->findPointingNumbers())
+            // {
+            //     somethingChanged = true;
+            //     difficultyRating += 2;
+            //     continue;
+            // }
+            
+        }
+        catch(const int e)
+        {
+            Statistics::exitSolve();
+            return -1;
+        }
             // if (somethingChanged)
             //     possibilitiesBoard->printPossibilities();
-        }
-        if (unknowns == 0)
-        {
-            Statistics::successfullSolve(hiddenSinglesFound, nakedPairsFound);
-            Statistics::exitSolve();
-            return difficultyRating;
-        }
+
 
         // printf("Requires guessing\n");
-        difficultyRating += 10;
+        difficultyRating += 5;
         
         // solutionBoard->printGrid();
         // possibilitiesBoard->printPossibilities();
@@ -401,6 +391,17 @@ int Solver::solveWithoutGuessing()
     if (unknowns > 0)
         return -1;
     return difficultyRating;
+}
+
+int Solver::normalizeDifficulty(GameBoard *originalBoard, int difficulty)
+{
+    int u = 0;
+    for (int i = 0; i < GameBoard::N; i++)
+        for (int j = 0; j < GameBoard::N; j++)
+            if (originalBoard->getNumberAt(i, j) == 0)
+                u++;
+    
+    return (difficulty * 15) / u; 
 }
 
 void Solver::printPossibilities()
