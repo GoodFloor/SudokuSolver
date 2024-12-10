@@ -1,31 +1,24 @@
 Generated boards: 10000
-Maximum number of unknowns: 61
-Maximum difficulty: 9
-Average difficulty: 3.406
+Maximum number of unknowns: 60
+Maximum difficulty: 4
+Average difficulty: 1.1793
 Maximum depth: 1
 Average depth: 1
-Average number of hiddenSingles() used: 13.4267
-Average number of nakedPairs() used: 0.5908
+Average number of hiddenSingles() used: 13.4093
+Average number of nakedPairs() used: 0.5764
 Unknowns summary: 
-	51;1
-	52;1
-	53;52
-	54;352
-	55;1447
-	56;3130
-	57;3245
-	58;1474
-	59;280
-	60;17
-	61;1
+	52;3
+	53;45
+	54;374
+	55;1435
+	56;3170
+	57;3292
+	58;1426
+	59;235
+	60;20
 Difficulty summary: 
-	0;449
-	1;846
-	2;1723
-	3;2203
-	4;2173
-	5;1527
-	6;801
-	7;211
-	8;54
-	9;13
+	0;1730
+	1;5043
+	2;2933
+	3;292
+	4;2

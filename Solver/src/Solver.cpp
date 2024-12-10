@@ -177,11 +177,9 @@ GameBoard *Solver::getBoard()
     return solutionBoard;
 }
 
-GameBoard *Solver::exportBoard()
+void Solver::unlinkBoard()
 {
-    GameBoard* myBoard = this->solutionBoard;
     this->solutionBoard = nullptr;
-    return myBoard;
 }
 
 void Solver::preprocess()
@@ -201,7 +199,6 @@ int Solver::solve()
     Statistics::enterSolve();
     int hiddenSinglesFound = 0;
     int nakedPairsFound = 0;
-    // printf("%i\n", Statistics::getDepth());
     int difficultyRating = 0;
     while (unknowns > 0)
     {
@@ -211,7 +208,6 @@ int Solver::solve()
             int r = this->findHiddenSingles();
             if (r > 0)
             {
-                // printf("Found hidden singles\n");
                 difficultyRating += r;
                 hiddenSinglesFound += r;
                 continue;
@@ -219,34 +215,18 @@ int Solver::solve()
             r = this->findNakedPairs();
             if (r > 0)
             {
-                // printf("Found naked pairs\n");
                 difficultyRating += r * 2;
                 nakedPairsFound += r;
                 continue;
             }
-            // if (this->findPointingNumbers())
-            // {
-            //     somethingChanged = true;
-            //     difficultyRating += 2;
-            //     continue;
-            // }
-            
         }
         catch(const int e)
         {
             Statistics::exitSolve();
             return -1;
         }
-            // if (somethingChanged)
-            //     possibilitiesBoard->printPossibilities();
 
-
-        // printf("Requires guessing\n");
         difficultyRating += 5;
-        
-        // solutionBoard->printGrid();
-        // possibilitiesBoard->printPossibilities();
-
         // Find the field with the least possibilities
         int bestI = -1, bestJ = -1, leastPossibilities = GameBoard::N + 1;
         for (int i = 0; i < GameBoard::N; i++)
@@ -362,25 +342,16 @@ int Solver::solveWithoutGuessing()
             {
                 if (this->findHiddenSingles())
                 {
-                    // printf("Found hidden singles\n");
                     somethingChanged = true;
                     difficultyRating += 1;
                     continue;
                 }
                 if (this->findNakedPairs())
                 {
-                    // printf("Found naked pairs\n");
                     somethingChanged = true;
                     difficultyRating += 2;
                     continue;
                 }
-                // if (this->findPointingNumbers())
-                // {
-                //     somethingChanged = true;
-                //     difficultyRating += 2;
-                //     continue;
-                // }
-                
             }
             catch(const int e)
             {
@@ -393,25 +364,7 @@ int Solver::solveWithoutGuessing()
     return difficultyRating;
 }
 
-int Solver::normalizeDifficulty(GameBoard *originalBoard, int difficulty)
+int Solver::normalizeDifficulty(int difficulty)
 {
-    int u = 0;
-    for (int i = 0; i < GameBoard::N; i++)
-        for (int j = 0; j < GameBoard::N; j++)
-            if (originalBoard->getNumberAt(i, j) == 0)
-                u++;
-    
-    return (difficulty * 15) / u; 
-}
-
-void Solver::printPossibilities()
-{
-    possibilitiesBoard->printPossibilities();
-}
-
-void Solver::test()
-{
-    possibilitiesBoard->printPossibilities();
-    findPointingNumbers();
-    possibilitiesBoard->printPossibilities();
+    return difficulty / GameBoard::N; 
 }

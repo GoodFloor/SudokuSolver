@@ -1,22 +1,15 @@
 BIN = ./bin/
 SRC = ./src/
 
-executables = solver generator
-commonObjectFiles = GameBoard.o PossibilitiesBoard.o Solver.o Statistics.o SolverPolynomial.o
-solverObjectFiles = ${commonObjectFiles} mainS.o
-generatorObjectFiles = ${commonObjectFiles} Generator.o mainG.o
+executables = demo
+objectFiles = GameBoard.o PossibilitiesBoard.o Solver.o Statistics.o SolverPolynomial.o Generator.o demo.o
 
-solverBin = $(addprefix $(BIN), $(solverObjectFiles))
-generatorBin = $(addprefix $(BIN), $(generatorObjectFiles))
-
+demoBin = $(addprefix $(BIN), $(objectFiles))
 
 all: ${executables}
 
-solver: ${solverBin}
-	g++ -o solver ${solverBin}
-
-generator: ${generatorBin}
-	g++ -o generator ${generatorBin}
+demo: ${demoBin}
+	g++ -o demo ${demoBin}
 
 $(BIN)%.o: $(SRC)%.cpp
 	g++ -o $@ -c $^

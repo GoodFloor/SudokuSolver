@@ -34,5 +34,6 @@
 # Custom
 Solver/solver
 Solver/generator
+Solver/demo
 Solver/.vscode
 /.vscode

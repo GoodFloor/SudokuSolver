@@ -18,7 +18,6 @@ private:
     void findSolvedCells(); // Also known as Naked Singles
     int findHiddenSingles();
     int findNakedPairs();
-    bool findPointingNumbers();
     int getSquareI(int rootI, int offset);
     int getSquareJ(int rootJ, int offset);
 public:
@@ -27,16 +26,13 @@ public:
     Solver(Solver* solver);
     ~Solver();
     GameBoard* getBoard();
-    // Returns board and removes link to it
-    GameBoard* exportBoard();
+    // Unlinks board so it doesn't get deleted with Solver
+    void unlinkBoard();
     void preprocess();
     // @return -1 if no solutions, -2 if multiple solution, board difficulty rating otherwise
     int solve();
     int solveWithoutGuessing();
-    int normalizeDifficulty(GameBoard* originalBoard, int difficulty);
-
-    void printPossibilities();
-    void test();
+    int normalizeDifficulty(int difficulty);
 };
 
 #endif

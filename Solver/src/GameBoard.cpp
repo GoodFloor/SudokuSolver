@@ -1,7 +1,5 @@
 #include <iostream>
-#include <list>
 #include "GameBoard.hpp"
-#include "Possibility.hpp"
 
 GameBoard::GameBoard()
 {
@@ -24,7 +22,6 @@ GameBoard::GameBoard(GameBoard *board)
 void GameBoard::loadGrid()
 {
     for (int i = 0; i < N; i++)
-    {
         for (int j = 0; j < N; j++)
         {
             char content;
@@ -36,50 +33,52 @@ void GameBoard::loadGrid()
             else 
                 j--;
         }
-    }
 }
 
 void GameBoard::printGrid()
+{    
+    for (int i = 0; i <= GameBoard::N * 4; i++)
+    {
+        for (int j = 0; j <= GameBoard::N * 4; j++)
+        {
+            // Pogrubione linie
+            if (i % (GameBoard::SIZE * 4) == 0 || j % (GameBoard::SIZE * 4) == 0)
+                std::cout << "█";
+            // Skrzyżowania
+            else if (i % 4 == 0 && j % 4 == 0)
+                std::cout << "┼";
+            // Pionowe linie
+            else if (j % 4 == 0)    
+                std::cout << "│";
+            // Poziome linie
+            else if (i % 4 == 0)    
+                std::cout << "─";
+            // Rozwiązane pola (9-...)   
+            else if (i % 4 == 2 && j % 4 == 2 && this->getNumberAt(i / 4, j / 4) > 9)
+                std::cout << (char)((this->getNumberAt(i / 4, j / 4) - 10) + 'A');
+            // Rozwiązane pola (1-9)
+            else if (i % 4 == 2 && j % 4 == 2 && this->getNumberAt(i / 4, j / 4) != 0)
+                std::cout << this->getNumberAt(i / 4, j / 4);
+            else
+                std::cout << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+void GameBoard::exportGrid()
 {
     for (int i = 0; i < GameBoard::N; i++)
         for (int j = 0; j < GameBoard::N; j++)
         {
             int n = this->getNumberAt(i, j);
             if (n < 10)
-                printf("%i", n);
+                std::cout << n;
             else 
-                printf("%c", (char)((n - 10) + 'A'));
+                std::cout << (char)((n - 10) + 'A');
         }
-    printf("\n");
-    
-    // for (int i = 0; i <= GameBoard::N * 4; i++)
-    // {
-    //     for (int j = 0; j <= GameBoard::N * 4; j++)
-    //     {
-    //         // Pogrubione linie
-    //         if (i % (GameBoard::SIZE * 4) == 0 || j % (GameBoard::SIZE * 4) == 0)
-    //             std::cout << "█";
-    //         // Skrzyżowania
-    //         else if (i % 4 == 0 && j % 4 == 0)
-    //             std::cout << "┼";
-    //         // Pionowe linie
-    //         else if (j % 4 == 0)    
-    //             std::cout << "│";
-    //         // Poziome linie
-    //         else if (i % 4 == 0)    
-    //             std::cout << "─";
-    //         // Rozwiązane pola (9-...)   
-    //         else if (i % 4 == 2 && j % 4 == 2 && this->getNumberAt(i / 4, j / 4) > 9)
-    //             std::cout << (char)((this->getNumberAt(i / 4, j / 4) - 10) + 'A');
-    //         // Rozwiązane pola (1-9)
-    //         else if (i % 4 == 2 && j % 4 == 2 && this->getNumberAt(i / 4, j / 4) != 0)
-    //             std::cout << this->getNumberAt(i / 4, j / 4);
-    //         else
-    //             std::cout << " ";
-    //     }
-    //     std::cout << std::endl;
-    // }
-    // std::cout << std::endl;
+    std::cout << std::endl;
 }
 
 int GameBoard::getNumberAt(int x, int y)

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <csignal>
+#include <string.h>
 #include "Solver.hpp"
 #include "Generator.hpp"
 #include "Statistics.hpp"
@@ -42,7 +43,12 @@ int main(int argc, char const *argv[])
     for (int i = 1; i <= targetPermutations && breakFlag; i++)
     {
         Generator* generator = new Generator();
-        GameBoard* board = generator->generateSudoku();
+        GameBoard* board;
+        if (argc == 2 && strcmp(argv[1], "L") == 0)
+            board = generator->generateSudoku();
+        else
+            board = generator->generateSudokuWithoutGuessing();
+        
         delete generator;
         // board->printGrid();
 
@@ -64,6 +70,7 @@ int main(int argc, char const *argv[])
         
         // Statistics
         unknownsData[numberOfUnknowns]++;
+        // cout << numberOfUnknowns << endl;
         difficultyData[r]++;
         averageDifficulty += r;
         averageDepth += Statistics::getMaxDepth();
@@ -76,7 +83,7 @@ int main(int argc, char const *argv[])
 
         // Progress indicator
         cerr << fixed << setprecision(1);
-        if ((i * 100.0 / targetPermutations) - last >= 1.)
+        if ((i * 100.0 / targetPermutations) - last >= .1)
         {
             cerr << i * 100.0 / targetPermutations << endl;
             last = i * 100.0 / targetPermutations;

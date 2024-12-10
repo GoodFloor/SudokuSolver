@@ -28,7 +28,8 @@ GameBoard *Generator::generateSolvedSudoku()
     Solver* gridFiller = new Solver(newGrid, false);
     delete newGrid;
     gridFiller->solve();
-    newGrid = gridFiller->exportBoard();
+    newGrid = gridFiller->getBoard();
+    gridFiller->unlinkBoard();
     delete gridFiller;
     return newGrid;
 }

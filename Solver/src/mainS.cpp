@@ -7,7 +7,8 @@ using namespace std;
 int main(int argc, char const *argv[])
 {
     cout << "L.p.\tlevel" << endl;
-    for (int i = 0; i < 1000; i++)
+    unsigned long long avgDifficulty = 0;
+    for (int i = 0; i < 100; i++)
     {
         GameBoard* board = new GameBoard();
         // GameBoard* solvedBoard = nullptr;
@@ -20,7 +21,8 @@ int main(int argc, char const *argv[])
         Solver* solver = new Solver(board, false);
         // solver->printPossibilities();
         int r = solver->solve();
-        r = solver->normalizeDifficulty(board, r);
+        r = solver->normalizeDifficulty(r);
+        avgDifficulty += r;
         // solver->test();
         
         // solvedBoard = solver->getBoard();
@@ -38,6 +40,7 @@ int main(int argc, char const *argv[])
         // cout << "r = " << r << endl;
         // cout << (i + 1) * 20 << "%" << endl;
     }
+    cout << "Average difficulty: " << 1. * avgDifficulty / 100 << endl;
     
     
     return 0;
